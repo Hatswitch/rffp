@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+from readfeat import read_features
 from pathlib import Path
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestClassifier
@@ -7,38 +8,8 @@ from sklearn.model_selection import KFold
 
 RF_TREES = 100
 
-def feature_parse(x):
-    if x == "'X'":
-        return -1.
-    else:
-        return float(x)
 
-
-def read_features(path):
-    """
-    Returns three matrices:
-    :param path:
-    :return:
-        features (X): nsamples x nfeatures
-        targets (y): nsamples x 1
-        runs: nsamples x 1
-    """
-    features = []
-    targets = []
-    runs = []
-
-    for fn in (path / "batch").glob("*f"):
-        target, run = fn.name[:-1].split('-')
-        with fn.open() as fp:
-            raw_features = fp.readline().split()
-        feature_row = [feature_parse(x) for x in raw_features]
-        features.append(feature_row)
-        targets.append(int(target))
-        runs.append(int(run))
-
-    return np.array(features), np.array(targets), np.array(runs)
-
-def select_features(features, targets, goal=100):
+def select_features(features, targets, goal=100, step=100):
     """
     :param features:
     :param targets:
@@ -47,7 +18,7 @@ def select_features(features, targets, goal=100):
     """
 
     print("Selecting best {} features".format(goal))
-    rfe = RFE(RandomForestClassifier(RF_TREES), goal, step=100, verbose=True)
+    rfe = RFE(RandomForestClassifier(RF_TREES), goal, step=step, verbose=True)
 
     rfe.fit(features, targets)
 
