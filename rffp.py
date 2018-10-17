@@ -72,12 +72,13 @@ if __name__ == "__main__":
 
     print("Loaded {0} samples with {1} features".format(*features.shape))
 
+    clf = RandomForestClassifier(RF_TREES)
+
     top_features, mapping = select_features(features, targets)
 
     print("Selected features: {}".format(mapping))
 
-    clf = RandomForestClassifier(RF_TREES)
-
     scores = np.array(list(kfold_scores(top_features, targets, clf)))
-
-    print("Accuracy: {:.2f}% +/- {:.2f}%".format(scores.mean()*100, scores.std()*200))
+    print("Top feature Accuracy: {:.2f}% +/- {:.2f}%".format(scores.mean()*100, scores.std()*200))
+    scores = np.array(list(kfold_scores(features, targets, clf)))
+    print("All feature accuracy: {:.2f}% +/- {:.2f}%".format(scores.mean()*100, scores.std()*200))
