@@ -4,9 +4,11 @@ from readfeat import read_features
 from pathlib import Path
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, cross_val_score
 
 RF_TREES = 100
+def cv_score(mean, std):
+    return "{:.1f}% +/- {:.1f}%".format(mean*100, std*200)
 
 
 def select_features(features, targets, goal=100, step=100):

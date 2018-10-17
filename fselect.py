@@ -1,13 +1,11 @@
 import sys
 from pathlib import Path
 from readfeat import read_features
-from rffp import select_features, RF_TREES
+from rffp import select_features, RF_TREES, cv_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from math import inf
 
-def cv_score(mean, std):
-    return "{:.1f}% +/- {:.1f}%".format(mean*100, std*200)
 
 
 def score_features(feat_options, data, target, clf, num_cv=10):
@@ -39,6 +37,7 @@ def find_best_features(data, target, max_features=inf):
             print("Stopping: {} {} {}".format(prev_best, best_mean, best_std))
             return cur_list
         cur_list = new_list
+        prev_best = best_mean
 
     return cur_list
 
